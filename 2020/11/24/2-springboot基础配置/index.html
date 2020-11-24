@@ -19,9 +19,9 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://i.loli.net/2020/11/24/OFRCKqmJp7AMjdb.jpg">
 <meta property="article:published_time" content="2020-11-24T02:45:02.000Z">
-<meta property="article:modified_time" content="2020-11-24T06:56:32.632Z">
+<meta property="article:modified_time" content="2020-11-24T07:15:46.444Z">
 <meta property="article:author" content="TenPaper">
-<meta property="article:tag" content="Anhui Jianghuai Automobile Group Co., Ltd. TenPaper">
+<meta property="article:tag" content="java">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://i.loli.net/2020/11/24/OFRCKqmJp7AMjdb.jpg">
   
@@ -287,10 +287,10 @@
 <p>更加具体的操作可以参照</p>
 <p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/huanzi-qch/p/9916784.html">https://www.cnblogs.com/huanzi-qch/p/9916784.html</a></p>
 <p>可以对个性化的banner进行更加细致的配置，还有更多的操作，这里不展开。</p>
-<h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><p>在src/main/resources目录下，Spring Boot提供了一个名为application.properties的默认全局配置文件，可对一些默认配置的配置值进行修改。当然，我们也可以将其后缀改为yml类型，使用yml的格式进行配置，更进一步，以后使用springcloud的时候，可以使用bootstrap.yml这种的优先级高的配置文件进行编写，也可以使用配置中心spring-cloud-config或者nacos上进行配置。</p>
+<h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><p>在src/main/resources目录下，Spring Boot提供了一个名为<code>application.properties</code>的默认全局配置文件，可对一些默认配置的配置值进行修改。当然，我们也可以将其后缀改为yml类型，使用yml的格式进行配置，更进一步，以后使用springcloud的时候，可以使用<code>bootstrap.yml</code>这种的优先级高的配置文件进行编写，也可以使用配置中心spring-cloud-config或者nacos上进行配置。</p>
 <p>附：<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html">application.properties中可配置所有官方属性</a></p>
 <h3 id="自定义属性"><a href="#自定义属性" class="headerlink" title="自定义属性"></a>自定义属性</h3><p>除了官方配置外，还可以对配置进行自定义，多用于频繁修改的全局配置</p>
-<p>以application.yml格式演示</p>
+<p>以<code>application.yml</code>格式演示</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">example:</span> </span><br><span class="line">  <span class="attr">blog:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">tenpaper</span></span><br><span class="line">    <span class="attr">title:</span> <span class="string">springboot</span></span><br></pre></td></tr></table></figure>
 
 <p>其中属性之间也是可以相互引用的</p>
@@ -299,35 +299,35 @@
 <p>定义一个BlogProperties Bean(实体类)，通过<code>@Value(&quot;$&#123;属性名&#125;&quot;)</code>来加载配置文件中的属性值：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.springbootinit.entity;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Value;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BlogProperties</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;example.blog.name&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;example.blog.title&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String title;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>其中@Data为lombok组件（实际上就是懒得写get set方法），被@Component注解标识的类，会被纳入Spring容器中统一管理，即把普通pojo实例化到spring容器中，好处是什么？一句话概括：你不用自己new了！后面可以直接对其进行调用；</p>
+<p>其中<code>@Data</code>为lombok组件（实际上就是懒得写get set方法），被<code>@Component</code>注解标识的类，会被纳入Spring容器中统一管理，即把普通pojo实例化到spring容器中，好处是什么？一句话概括：你不用自己new了！后面可以直接对其进行调用；</p>
 <p>编写IndexController，注入该Bean：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.springbootinit.controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.example.springbootinit.entity.BlogProperties;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.GetMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IndexController</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> BlogProperties blogProperties;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@GetMapping(&quot;/&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">index</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> blogProperties.getName()+<span class="string">&quot;========&quot;</span>+blogProperties.getTitle();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>@RestController可以看做是@Controller和@ResponseBody的结合体，代表全局</p>
-<p>@Controller代表这个类是控制类，在对应的方法上，视图解析器可以解析return 的jsp,html页面，并且跳转到相应页面上</p>
-<p>若返回json等内容到页面，则需要加@ResponseBody注解，比如示例中返回的字符串</p>
-<p>@Autowired 注释，它可以对类成员变量、方法及构造函数进行标注，完成自动装配的工作。 通过 @Autowired的使用来消除 set ，get方法。</p>
+<p><code>@RestController</code>可以看做是<code>@Controller</code>和<code>@ResponseBody</code>的结合体，代表全局</p>
+<p><code>@Controller</code>代表这个类是控制类，在对应的方法上，视图解析器可以解析return 的jsp,html页面，并且跳转到相应页面上</p>
+<p>若返回json等内容到页面，则需要加<code>@ResponseBody</code>注解，比如示例中返回的字符串</p>
+<p><code>@Autowired</code> 注释，它可以对类成员变量、方法及构造函数进行标注，完成自动装配的工作。 通过 <code>@Autowired</code>的使用来消除 set ，get方法。</p>
 <p><a target="_blank" rel="noopener" href="http://localhost:8080/">http://localhost:8080/</a></p>
 <p><img src="https://i.loli.net/2020/11/24/OFRCKqmJp7AMjdb.jpg" alt="springboot基础配置.jpg"></p>
 <p>运行结果和helloworld的原理一样，将字符串返回到页面上</p>
-<p>示例中通过实体类的`@Value(“${属性名}”)来加载配置文件application.yml中的两个自定义属性值，然后通过标注@Component表明这是一个会被注入到容器中的实体类实现自动注入，然后在控制类中通过@Autowired来自动装配Bean，在方法中调用，然后使用@RestController将注入的Bean中具体的实体对象值输出到页面上，完成整个工作</p>
+<p>示例中通过实体类的<code>@Value(&quot;$&#123;属性名&#125;&quot;)</code>来加载配置文件<code>application.yml</code>中的两个自定义属性值，然后通过标注<code>@Component</code>表明这是一个会被注入到容器中的实体类实现自动注入，然后在控制类中通过<code>@Autowired</code>来自动装配Bean，在方法中调用，然后使用<code>@RestController</code>将注入的Bean中具体的实体对象值输出到页面上，完成整个工作</p>
 <h3 id="自定义配置文件"><a href="#自定义配置文件" class="headerlink" title="自定义配置文件"></a>自定义配置文件</h3><p>使用前要先引入配置文件处理器的依赖：</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-configuration-processor<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<p>除了全局的配置文件application.properties之外，实测不支持yml，还可以配置自定义的配置文件,一样是在</p>
-<p>src/main/resources目录下新建一个test.properties:</p>
+<p>除了全局的配置文件<code>application.properties</code>之外，实测不支持yml，还可以配置自定义的配置文件,一样是在</p>
+<p>src/main/resources目录下新建一个<code>test.properties</code>:</p>
 <figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">test.name</span>=<span class="string">java</span></span><br><span class="line"><span class="meta">test.age</span>=<span class="string">10</span></span><br></pre></td></tr></table></figure>
 
 <p>定义一个对应该配置文件的Bean:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.springbootinit.entity;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.context.properties.ConfigurationProperties;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.PropertySource;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix=&quot;test&quot;)</span></span><br><span class="line"><span class="meta">@PropertySource(&quot;classpath:test.properties&quot;)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestConfigBean</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>@Configuration用于定义配置类，可替换xml配置文件，被注解的类内部包含有一个或多个被@Bean注解的方法，这些方法将会被AnnotationConfigApplicationContext或AnnotationConfigWebApplicationContext类进行扫描，并用于构建bean定义，初始化Spring容器。</p>
-<p>Spring的@Bean注解用于告诉方法，产生一个Bean对象，然后这个Bean对象交给Spring管理。Spring只会调用一次，将这个Bean对象放在自己的IOC容器中。</p>
+<p><code>@Configuration</code>用于定义配置类，可替换xml配置文件，被注解的类内部包含有一个或多个被<code>@Bean</code>注解的方法，这些方法将会被<code>AnnotationConfigApplicationContext</code>或<code>AnnotationConfigWebApplicationContext</code>类进行扫描，并用于构建bean定义，初始化Spring容器。</p>
+<p>Spring的<code>@Bean</code>注解用于告诉方法，产生一个Bean对象，然后这个Bean对象交给Spring管理。Spring只会调用一次，将这个Bean对象放在自己的IOC容器中。</p>
 <p>通俗的将就是在服务启动时，在需要初始化的实例，方法，内容时使用。</p>
-<p>@ConfigurationProperties需要和@Configuration配合使用，我们通常在一个POJO里面进行配置：使用@ConfigurationProperties，它可以把同类的配置信息自动封装成实体类</p>
-<p>PropertySource注解读取指定文件并将属性注入到配置类，读取不同环境中的配置文件</p>
-<p>@PropertySource(“classpath:test.properties”)获取对应的properties文件，再用@ConfigurationProperties(prefix = “test”)进行属性映射</p>
-<p>@PropertySource注解，默认是不支持yml配置文件读取的</p>
+<p><code>@ConfigurationProperties</code>需要和<code>@Configuration</code>配合使用，我们通常在一个POJO里面进行配置：使用<code>@ConfigurationProperties</code>，它可以把同类的配置信息自动封装成实体类</p>
+<p><code>@PropertySource</code>注解读取指定文件并将属性注入到配置类，读取不同环境中的配置文件</p>
+<p><code>@PropertySource(&quot;classpath:test.properties&quot;)</code>获取对应的properties文件，再用<code>@ConfigurationProperties(prefix = &quot;test&quot;)</code>进行属性映射</p>
+<p><code>@PropertySource</code>注解，默认是不支持yml配置文件读取的</p>
 <p>注解<code>@PropertySource(&quot;classpath:test.properties&quot;)</code>指明了使用哪个配置文件。要使用该配置Bean，同样也需要在入口类里使用注解<code>@EnableConfigurationProperties(&#123;TestConfigBean.class&#125;)</code>来启用该配置。</p>
 <h3 id="使用xml配置"><a href="#使用xml配置" class="headerlink" title="使用xml配置"></a>使用xml配置</h3><p>虽然Spring Boot并不推荐我们继续使用xml配置，但如果出现不得不使用xml配置的情况，Spring Boot允许我们在入口类里通过注解<code>@ImportResource(&#123;&quot;classpath:xxx-application.xml&quot;&#125;)</code>来引入xml配置文件。</p>
 <h3 id="Profile配置"><a href="#Profile配置" class="headerlink" title="Profile配置"></a>Profile配置</h3><p>Profile用来针对不同的环境下使用不同的配置文件，多环境配置文件必须以<code>application-&#123;profile&#125;.properties</code>的格式命，其中<code>&#123;profile&#125;</code>为环境标识。比如定义两个配置文件：</p>
@@ -344,7 +344,7 @@
 <p>如：<code>spring.profiles.active=dev</code>就会加载application-dev.properties配置文件内容。可以在运行jar文件的时候使用命令<code>java -jar xxx.jar --spring.profiles.active=&#123;profile&#125;</code>切换不同的环境配置。</p>
 <p>对于使用过配置中心spring-cloud-config和使用过nacos的人，肯定对这个不会陌生。</p>
 <h2 id="命令行设置属性值"><a href="#命令行设置属性值" class="headerlink" title="命令行设置属性值"></a>命令行设置属性值</h2><p>在部署运行jar包的时候 可以使用 </p>
-<p>java -jar xxxxxxx.jar –server.port=8090</p>
+<p><code>java -jar xxxxxxx.jar --server.port=8090</code></p>
 <p>这种方式来进行对于的配置值修改，相当于直接作用于官方配置文件之内</p>
 <p>如果不允许，可以对启动类进行设置</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    SpringApplication app &#x3D; new SpringApplication(Application.class);</span><br><span class="line">    app.setAddCommandLineProperties(false);</span><br><span class="line">    app.run(args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -422,7 +422,29 @@
   <div class="article-info article-info-index">
     
     
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
     
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
     
 
@@ -486,6 +508,15 @@
 
 
 <nav id="article-nav">
+  
+    <a href="/2020/11/24/3-springboot%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BF%E9%97%AE%E5%B7%A5%E5%85%B7/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          3-springboot数据库访问工具
+        
+      </div>
+    </a>
   
   
     <a href="/2020/11/24/1-springboot%E5%90%AF%E5%8A%A8/" id="article-nav-older" class="article-nav-link-wrap">
