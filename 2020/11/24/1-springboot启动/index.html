@@ -10,12 +10,12 @@
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta name="description" content="springboot启动1.概念简介（百度百科）SpringBoot是由Pivotal团队在2013年开始研发、2014年4月发布第一个版本的全新开源的轻量级框架。它基于Spring4.0设计，不仅继承了Spring框架原有的优秀特性，而且还通过简化配置来进一步简化了Spring应用的整个搭建和开发过程。另外SpringBoot通过集成大量的框架使得依赖包的版本冲突，以及引用的不稳定性等问题得到了">
+  <meta name="description" content="1.概念简介（百度百科）SpringBoot是由Pivotal团队在2013年开始研发、2014年4月发布第一个版本的全新开源的轻量级框架。它基于Spring4.0设计，不仅继承了Spring框架原有的优秀特性，而且还通过简化配置来进一步简化了Spring应用的整个搭建和开发过程。另外SpringBoot通过集成大量的框架使得依赖包的版本冲突，以及引用的不稳定性等问题得到了很好的解决。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="1.springboot启动">
 <meta property="og:url" content="http://tenpaper.github.io/2020/11/24/1-springboot%E5%90%AF%E5%8A%A8/index.html">
 <meta property="og:site_name" content="TenPaper的博客">
-<meta property="og:description" content="springboot启动1.概念简介（百度百科）SpringBoot是由Pivotal团队在2013年开始研发、2014年4月发布第一个版本的全新开源的轻量级框架。它基于Spring4.0设计，不仅继承了Spring框架原有的优秀特性，而且还通过简化配置来进一步简化了Spring应用的整个搭建和开发过程。另外SpringBoot通过集成大量的框架使得依赖包的版本冲突，以及引用的不稳定性等问题得到了">
+<meta property="og:description" content="1.概念简介（百度百科）SpringBoot是由Pivotal团队在2013年开始研发、2014年4月发布第一个版本的全新开源的轻量级框架。它基于Spring4.0设计，不仅继承了Spring框架原有的优秀特性，而且还通过简化配置来进一步简化了Spring应用的整个搭建和开发过程。另外SpringBoot通过集成大量的框架使得依赖包的版本冲突，以及引用的不稳定性等问题得到了很好的解决。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://i.loli.net/2020/11/24/ViQDHAw2vxk9E1L.jpg">
 <meta property="og:image" content="https://i.loli.net/2020/11/24/TEAW7V3468HZbUc.jpg">
@@ -23,7 +23,7 @@
 <meta property="og:image" content="https://i.loli.net/2020/11/24/dOsVGev2MgocI1m.jpg">
 <meta property="og:image" content="https://i.loli.net/2020/11/24/6AmbfCGiTRPlS9n.jpg">
 <meta property="article:published_time" content="2020-11-24T00:22:46.000Z">
-<meta property="article:modified_time" content="2020-11-24T01:38:27.081Z">
+<meta property="article:modified_time" content="2020-11-24T02:37:43.440Z">
 <meta property="article:author" content="TenPaper">
 <meta property="article:tag" content="java">
 <meta name="twitter:card" content="summary">
@@ -275,7 +275,7 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h2 id="springboot启动"><a href="#springboot启动" class="headerlink" title="springboot启动"></a>springboot启动</h2><h3 id="1-概念"><a href="#1-概念" class="headerlink" title="1.概念"></a>1.概念</h3><h4 id="简介（百度百科）"><a href="#简介（百度百科）" class="headerlink" title="简介（百度百科）"></a><strong>简介</strong>（百度百科）</h4><p>SpringBoot是由Pivotal团队在2013年开始研发、2014年4月发布第一个版本的全新开源的轻量级框架。它基于Spring4.0设计，不仅继承了Spring框架原有的优秀特性，而且还通过简化配置来进一步简化了Spring应用的整个搭建和开发过程。另外SpringBoot通过集成大量的框架使得依赖包的版本冲突，以及引用的不稳定性等问题得到了很好的解决。</p>
+    <h3 id="1-概念"><a href="#1-概念" class="headerlink" title="1.概念"></a>1.概念</h3><h4 id="简介（百度百科）"><a href="#简介（百度百科）" class="headerlink" title="简介（百度百科）"></a><strong>简介</strong>（百度百科）</h4><p>SpringBoot是由Pivotal团队在2013年开始研发、2014年4月发布第一个版本的全新开源的轻量级框架。它基于Spring4.0设计，不仅继承了Spring框架原有的优秀特性，而且还通过简化配置来进一步简化了Spring应用的整个搭建和开发过程。另外SpringBoot通过集成大量的框架使得依赖包的版本冲突，以及引用的不稳定性等问题得到了很好的解决。</p>
 <a id="more"></a>
 
 <h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><p>（1）可以创建独立的<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/Spring/85061">Spring</a>应用程序，并且基于其Maven或Gradle插件，可以创建可执行的JARs和WARs；</p>
@@ -290,9 +290,9 @@
 <p>SpringBoot应用系统开发模板的基本架构设计从前端到后台进行说明：前端常使用模板引擎，主要有FreeMarker和Thymeleaf，它们都是用Java语言编写的，渲染模板并输出相应文本，使得界面的设计与应用的逻辑分离，同时前端开发还会使用到Bootstrap、AngularJS、JQuery等；在浏览器的数据传输格式上采用Json，非xml，同时提供RESTfulAPI；SpringMVC框架用于数据到达服务器后处理请求；到数据访问层主要有Hibernate、MyBatis、JPA等持久层框架；数据库常用<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/MySQL/471251">MySQL</a>；开发工具推荐IntelliJIDEA。</p>
 <h4 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h4><p>从最根本上来讲，Spring Boot就是一些库的集合，它能够被任意项目的构建系统所使用。简便起见，该框架也提供了命令行界面，它可以用来运行和测试Boot应用。框架的发布版本，包括集成的CLI（命令行界面），可以在Spring仓库中手动下载和安装。一种更为简便的方式是使用Groovy环境管理器（Groovy enVironment Manager，GVM），它会处理Boot版本的安装和管理。Boot及其CLI可以通过GVM的命令行gvm install springboot进行安装。在OS X上安装Boot可以使用Homebrew包管理器。为了完成安装，首先要使用brew tap pivotal/tap切换到Pivotal仓库中，然后执行brew install springboot命令。</p>
 <p>要进行打包和分发的工程会依赖于像<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/Maven">Maven</a>或<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/Gradle">Gradle</a>这样的构建系统。为了简化依赖图，Boot的功能是模块化的，通过导入Boot所谓的“starter”模块，可以将许多的依赖添加到工程之中。为了更容易地管理依赖版本和使用默认配置，框架提供了一个parent POM，工程可以继承它。</p>
-<h4 id="springboot百度百科"><a href="#springboot百度百科" class="headerlink" title="springboot百度百科"></a>springboot百度百科</h4><p>[<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/Spring%20Boot/20249767?fr=aladdin%5D">https://baike.baidu.com/item/Spring%20Boot/20249767?fr=aladdin]</a>(<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/Spring">https://baike.baidu.com/item/Spring</a> Boot/20249767?fr=aladdin)</p>
+<h4 id="springboot百度百科"><a href="#springboot百度百科" class="headerlink" title="springboot百度百科"></a>springboot百度百科</h4><p><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/Spring%20Boot/20249767?fr=aladdin">https://baike.baidu.com/item/Spring%20Boot/20249767?fr=aladdin</a></p>
 <h4 id="springboot官方网站"><a href="#springboot官方网站" class="headerlink" title="springboot官方网站"></a>springboot官方网站</h4><p><a target="_blank" rel="noopener" href="https://spring.io/projects/spring-boot">https://spring.io/projects/spring-boot</a></p>
-<h2 id="2-构建"><a href="#2-构建" class="headerlink" title="2.构建"></a>2.构建</h2><p>Spring Boot是在Spring框架上创建的一个全新的框架，其设计目的是简化Spring应用的搭建和开发过程。开启Spring Boot有许多种方法可供选择，可使用<a target="_blank" rel="noopener" href="http://start.spring.io/%E6%9D%A5%E6%9E%84%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Spring">http://start.spring.io/来构建一个简单的Spring</a> Boot项目，一般IDE工具也可以使用。</p>
+<h2 id="2-构建"><a href="#2-构建" class="headerlink" title="2.构建"></a>2.构建</h2><p>Spring Boot是在Spring框架上创建的一个全新的框架，其设计目的是简化Spring应用的搭建和开发过程。开启Spring Boot有许多种方法可供选择，可使用<a target="_blank" rel="noopener" href="http://start.spring.io/">http://start.spring.io/</a> 来构建一个简单的Spring Boot项目，一般IDE工具也可以使用。</p>
 <p><img src="https://i.loli.net/2020/11/24/ViQDHAw2vxk9E1L.jpg" alt="springboot创建.jpg"></p>
 <p>左侧选择maven工程，java语言，springboot版本，项目名称和java版本（8.0）以及部署方式（jar，war），由于篇幅原因图片不全，下面有java版本选择和部署方式。</p>
 <p>右侧为依赖加入，可以选择基于springboot版本自己需要的依赖。</p>
