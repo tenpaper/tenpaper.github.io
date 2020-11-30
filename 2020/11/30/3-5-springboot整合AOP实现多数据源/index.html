@@ -6,19 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://tenpaper.github.io">
-  <title>Category: springboot基本原理 | TenPaper的博客</title>
+  <title>3.5.springboot整合AOP实现多数据源 | TenPaper的博客</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta name="description" content="安徽江淮汽车集团股份有限公司 | 信息部 | 技术科">
-<meta property="og:type" content="website">
-<meta property="og:title" content="TenPaper的博客">
-<meta property="og:url" content="http://tenpaper.github.io/categories/springboot%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86/index.html">
+  <meta name="description" content="实际生产环境使用的时候，为了提高效率，一般会使用主从同步，读写分离的方式，也会出现不同数据存放于不同数据库的情况，而上一章使用mybatis的方式只能对一个数据库进行操作，针对生产实际需求，本章研究如何对不同数据库进行操作，也就是多数据源。 沿用之前springboot集成mybatis的xml版本，链接在此，在此基础上使用面向切面编程（AOP）的方式进行改良。 1.依赖1234567891011">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3.5.springboot整合AOP实现多数据源">
+<meta property="og:url" content="http://tenpaper.github.io/2020/11/30/3-5-springboot%E6%95%B4%E5%90%88AOP%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/index.html">
 <meta property="og:site_name" content="TenPaper的博客">
-<meta property="og:description" content="安徽江淮汽车集团股份有限公司 | 信息部 | 技术科">
+<meta property="og:description" content="实际生产环境使用的时候，为了提高效率，一般会使用主从同步，读写分离的方式，也会出现不同数据存放于不同数据库的情况，而上一章使用mybatis的方式只能对一个数据库进行操作，针对生产实际需求，本章研究如何对不同数据库进行操作，也就是多数据源。 沿用之前springboot集成mybatis的xml版本，链接在此，在此基础上使用面向切面编程（AOP）的方式进行改良。 1.依赖1234567891011">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-30T06:37:05.000Z">
+<meta property="article:modified_time" content="2020-11-30T13:16:05.734Z">
 <meta property="article:author" content="TenPaper">
-<meta property="article:tag" content="Anhui Jianghuai Automobile Group Co., Ltd. TenPaper">
+<meta property="article:tag" content="java">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="TenPaper的博客" type="application/atom+xml">
@@ -214,41 +216,197 @@
               class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-3-5-springboot整合AOP实现多数据源" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
   
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
+    <h1 class="article-title" itemprop="name">
+      3.5.springboot整合AOP实现多数据源
+    </h1>
+  
+
+
+  
+  
+        
+        <span id="busuanzi_container_page_pv" style='display:none' class="archive-article-date">
+              <i class="icon-smile icon"></i> 阅读数：<span id="busuanzi_value_page_pv"></span>次
+        </span>
+
 <a href="/2020/11/30/3-5-springboot%E6%95%B4%E5%90%88AOP%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" class="archive-article-date">
         <time datetime="2020-11-30T06:37:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-30</time>
 </a>
 
+  
+  
+    
+<div style="margin-top:10px;">
+  <span class="post-time">
+    <span class="post-meta-item-icon">
+      <!-- fonts.scss -->
+      <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
+      <i class="icon-statistics"></i>
+      <span class="post-meta-item-text"> 字数统计:</span>
+      <span class="post-count">4.8k字</span>
+    </span>
+  </span>
+
+  <span class="post-time">
+    &nbsp; | &nbsp;
+    <span class="post-meta-item-icon">
+      <i class="icon-book icon"></i>
+      <span class="post-meta-item-text"> 阅读时长≈</span>
+      <span class="post-count">21分</span>
+    </span>
+  </span>
+</div>
+
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <p>实际生产环境使用的时候，为了提高效率，一般会使用主从同步，读写分离的方式，也会出现不同数据存放于不同数据库的情况，而上一章使用mybatis的方式只能对一个数据库进行操作，针对生产实际需求，本章研究如何对不同数据库进行操作，也就是多数据源。</p>
+<p>沿用之前springboot集成mybatis的xml版本，<a href="%5Bhttps://tenpaper.github.io/2020/11/27/3-4-springboot%E6%95%B4%E5%90%88mybatis-druid%E7%9A%84xml%E7%89%88/%5D(https://tenpaper.github.io/2020/11/27/3-4-springboot%E6%95%B4%E5%90%88mybatis-druid%E7%9A%84xml%E7%89%88/)">链接在此</a>，在此基础上使用面向切面编程（AOP）的方式进行改良。</p>
+<h2 id="1-依赖"><a href="#1-依赖" class="headerlink" title="1.依赖"></a>1.依赖</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">relativePath</span>/&gt;</span> <span class="comment">&lt;!-- lookup parent from repository --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.example<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>blog-springboot-druid-mybatis-xml<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.0.1-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>blog-springboot-druid-mybatis-xml<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Demo project for Spring Boot<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">java.version</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">java.version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">druid.version</span>&gt;</span>1.2.3<span class="tag">&lt;/<span class="name">druid.version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis.spring.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-devtools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>druid-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;druid.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-aspects<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--常用工具类 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.commons<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-lang3<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>新引入<code>spring-aspects</code>，提供的对AspectJ框架的整合，AspectJ是一个面向切面的框架，它扩展了Java语言。AspectJ定义了AOP语法，它有一个专门的编译器用来生成遵守Java字节编码规范的Class文件。<code>spring-aop</code>已在<code>spring-boot-starter-web</code>中引入，无需重复。</p>
+<p>作为AOP的具体实现之一的AspectJ，它向Java中加入了连接点（Join Point）这个新概念，其实它也只是现存的一个Java概念的名称而已。它向Java语言中加入少许新结构：切点（pointcut）、通知（Advice）、类型间声明（Inter-type declaration）和方面（Aspect）。切点和通知动态地影响程序流程，类型间声明则是静态的影响程序的类等级结构，而方面则是对所有这些新结构的封装。</p>
+<p><code>commons-lang3</code>为引入的工具类包。</p>
+<p>除此之外依赖与上一章无根本改动。</p>
+<h2 id="2-配置"><a href="#2-配置" class="headerlink" title="2.配置"></a>2.配置</h2><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">com.alibaba.druid.pool.DruidDataSource</span> <span class="comment"># 主数据源，默认的</span></span><br><span class="line">    <span class="attr">druid:</span></span><br><span class="line">      <span class="attr">master:</span></span><br><span class="line">        <span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/github?useSSL=false&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Asia/Shanghai</span></span><br><span class="line">        <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">        <span class="attr">password:</span> <span class="number">123456</span></span><br><span class="line">      <span class="comment"># 从库数据源</span></span><br><span class="line">      <span class="attr">slave:</span></span><br><span class="line">        <span class="comment">#从数据源开关/默认关闭</span></span><br><span class="line">        <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">        <span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/github2?useSSL=false&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Asia/Shanghai</span></span><br><span class="line">        <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">        <span class="attr">password:</span> <span class="number">123456</span></span><br><span class="line">      <span class="comment"># 数据源其他配置</span></span><br><span class="line">      <span class="comment"># 下面为连接池的补充设置，应用到上面所有数据源中</span></span><br><span class="line">      <span class="comment"># 初始化大小，最小，最大</span></span><br><span class="line">      <span class="attr">initialSize:</span> <span class="number">5</span></span><br><span class="line">      <span class="attr">minIdle:</span> <span class="number">5</span></span><br><span class="line">      <span class="attr">maxActive:</span> <span class="number">20</span></span><br><span class="line">      <span class="comment"># 配置获取连接等待超时的时间</span></span><br><span class="line">      <span class="attr">maxWait:</span> <span class="number">60000</span></span><br><span class="line">      <span class="comment"># 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒</span></span><br><span class="line">      <span class="attr">timeBetweenEvictionRunsMillis:</span> <span class="number">60000</span></span><br><span class="line">      <span class="comment"># 配置一个连接在池中最小生存的时间，单位是毫秒</span></span><br><span class="line">      <span class="attr">minEvictableIdleTimeMillis:</span> <span class="number">300000</span></span><br><span class="line">      <span class="comment"># 配置一个连接在池中最大生存的时间，单位是毫秒</span></span><br><span class="line">      <span class="attr">maxEvictableIdleTimeMillis:</span> <span class="number">900000</span></span><br><span class="line">      <span class="attr">validationQuery:</span> <span class="string">SELECT</span> <span class="number">1</span> <span class="string">FROM</span> <span class="string">DUAL</span></span><br><span class="line">      <span class="attr">testWhileIdle:</span> <span class="literal">true</span></span><br><span class="line">      <span class="attr">testOnBorrow:</span> <span class="literal">false</span></span><br><span class="line">      <span class="attr">testOnReturn:</span> <span class="literal">false</span></span><br><span class="line">      <span class="comment"># 打开PSCache，并且指定每个连接上PSCache的大小</span></span><br><span class="line">      <span class="attr">poolPreparedStatements:</span> <span class="literal">true</span></span><br><span class="line">      <span class="comment">#      max-open-prepared-statements: 20</span></span><br><span class="line">      <span class="comment">#      max-pool-prepared-statement-per-connection-size: 20</span></span><br><span class="line">      <span class="comment">#   配置监控统计拦截的filters，去掉后监控界面sql无法统计，&#x27;wall&#x27;用于防火墙</span></span><br><span class="line">      <span class="attr">filters:</span> <span class="string">stat,wall,log4j2</span> <span class="comment"># log4j2</span></span><br><span class="line">      <span class="comment"># Spring监控AOP切入点，如x.y.z.service.*,配置多个英文逗号分隔</span></span><br><span class="line">      <span class="comment">#aop-patterns: com.springboot.servie.*</span></span><br><span class="line"></span><br><span class="line">      <span class="comment"># WebStatFilter配置</span></span><br><span class="line">      <span class="attr">web-stat-filter:</span></span><br><span class="line">        <span class="comment"># 忽略过滤的格式</span></span><br><span class="line">        <span class="attr">exclusions:</span> <span class="string">&quot;*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*&quot;</span></span><br><span class="line">        <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">        <span class="comment"># 添加过滤规则</span></span><br><span class="line">        <span class="attr">url-pattern:</span> <span class="string">&quot;/*&quot;</span></span><br><span class="line">      <span class="attr">maxPoolPreparedStatementPerConnectionSize:</span> <span class="number">20</span></span><br><span class="line">      <span class="comment"># 合并多个DruidDataSource的监控数据</span></span><br><span class="line">      <span class="attr">useGlobalDataSourceStat:</span> <span class="literal">true</span></span><br><span class="line">      <span class="comment"># 通过connectProperties属性来打开mergeSql功能；慢SQL记录</span></span><br><span class="line">      <span class="attr">connectionProperties:</span> <span class="string">druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500</span></span><br><span class="line">      <span class="attr">filter:</span></span><br><span class="line">        <span class="attr">stat:</span></span><br><span class="line">          <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">          <span class="attr">db-type:</span> <span class="string">mysql</span></span><br><span class="line">          <span class="attr">log-slow-sql:</span> <span class="literal">true</span></span><br><span class="line">          <span class="attr">slow-sql-millis:</span> <span class="number">2000</span></span><br><span class="line">      <span class="comment"># StatViewServlet配置</span></span><br><span class="line">      <span class="attr">stat-view-servlet:</span></span><br><span class="line">        <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">        <span class="comment"># 访问路径为/druid时，跳转到StatViewServlet</span></span><br><span class="line">        <span class="attr">url-pattern:</span> <span class="string">/druid/*</span></span><br><span class="line">        <span class="attr">login-username:</span> <span class="string">druid</span></span><br><span class="line">        <span class="attr">login-password:</span> <span class="string">druid123</span></span><br><span class="line">        <span class="comment"># 是否能够重置数据</span></span><br><span class="line">        <span class="attr">reset-enable:</span> <span class="literal">true</span> <span class="comment"># 启用HTML页面上的“Reset All”功能</span></span><br><span class="line">        <span class="attr">allow:</span> <span class="string">&quot;&quot;</span> <span class="comment"># 设置IP白名单(没有配置或者为空，则允许所有访问)不设置部署到服务器会无法访问</span></span><br><span class="line">      <span class="comment"># deny: &quot;&quot; # 设置ip黑名单</span></span><br><span class="line">      <span class="comment"># IP白名单</span></span><br><span class="line">      <span class="comment"># allow: 127.0.0.1</span></span><br><span class="line">      <span class="comment">#	IP黑名单（共同存在时，deny优先于allow）</span></span><br><span class="line">      <span class="comment"># deny: 192.168.1.218</span></span><br><span class="line"></span><br><span class="line">      <span class="comment"># 启用</span></span><br><span class="line">      <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">mybatis:</span></span><br><span class="line">  <span class="comment"># 搜索指定包别名</span></span><br><span class="line">  <span class="attr">typeAliasesPackage:</span> <span class="string">com.example.blogspringbootdruidmybatisxml.entity</span></span><br><span class="line">  <span class="comment"># 配置mapper的扫描，找到所有的mapper.xml映射文件</span></span><br><span class="line">  <span class="attr">mapperLocations:</span> <span class="string">classpath*:mapper/**/*Mapper.xml</span></span><br></pre></td></tr></table></figure>
+
+<p>与之前的根本区别在于，将数据库链接重新写入新位置，加入master和slave的层级结构，并且在slave层级做是否启用的判断，新增</p>
+<p><code>maxEvictableIdleTimeMillis</code>配置，补足链接配置（之前是忘记加了，影响不大）。</p>
+<h2 id="3-数据库"><a href="#3-数据库" class="headerlink" title="3.数据库"></a>3.数据库</h2><p>建表语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`student`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`name`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`sex`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`age`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> AUTO_INCREMENT=<span class="number">12</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8;</span><br></pre></td></tr></table></figure>
+
+<p>顺带一提的是，在配置文件里，我用了同一个地址的两个不同的数据库，实际使用的时候也可以使用不同的连接地址。</p>
+<h2 id="4-实体类"><a href="#4-实体类" class="headerlink" title="4.实体类"></a>4.实体类</h2><h2 id="5-数据访问层（Mapper层或Dao层）"><a href="#5-数据访问层（Mapper层或Dao层）" class="headerlink" title="5.数据访问层（Mapper层或Dao层）"></a>5.数据访问层（Mapper层或Dao层）</h2><h2 id="6-sql语句（Mapper-xml）"><a href="#6-sql语句（Mapper-xml）" class="headerlink" title="6.sql语句（Mapper.xml）"></a>6.sql语句（Mapper.xml）</h2><h2 id="7-业务逻辑层（service层）"><a href="#7-业务逻辑层（service层）" class="headerlink" title="7.业务逻辑层（service层）"></a>7.业务逻辑层（service层）</h2><h2 id="8-实现层（Impl层）"><a href="#8-实现层（Impl层）" class="headerlink" title="8.实现层（Impl层）"></a>8.实现层（Impl层）</h2><h2 id="9-控制层"><a href="#9-控制层" class="headerlink" title="9.控制层"></a>9.控制层</h2><p>以上全部省略（其实就是懒），详情可以查看本文开头的链接。</p>
+<h2 id="10-多数据源"><a href="#10-多数据源" class="headerlink" title="10.多数据源"></a>10.多数据源</h2><p>多数据源方面引用成熟的开源项目中部分组件，官方网站为<a target="_blank" rel="noopener" href="http://www.ruoyi.vip/">若依</a>，并在其基础上进行二次开发，完善利用面向切面的编程方式使用注解进行多数据源选择。</p>
+<p>因为使用了两套数据源（甚至可以多套），我们需要在使用A方法的时候使用A数据源，B方法的时候使用B数据源，而数据库的连接自动注入方法默认的只有一种，我们需要对部分的配置文件进行手动配置，来达成配置切换的目的。</p>
+<h3 id="1-工具类的准备"><a href="#1-工具类的准备" class="headerlink" title="(1)工具类的准备"></a>(1)工具类的准备</h3><p>动态数据源(类名和方法名都贼长)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.blogspringbootdruidmybatisxml.utils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.sql.DataSource;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 动态数据源</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 付疆疆</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020/11/27 15:09</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DynamicDataSource</span> <span class="keyword">extends</span> <span class="title">AbstractRoutingDataSource</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DynamicDataSource</span><span class="params">(DataSource defaultTargetDataSource, Map&lt;Object, Object&gt; targetDataSources)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.setDefaultTargetDataSource(defaultTargetDataSource);</span><br><span class="line">        <span class="keyword">super</span>.setTargetDataSources(targetDataSources);</span><br><span class="line">        <span class="keyword">super</span>.afterPropertiesSet();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Object <span class="title">determineCurrentLookupKey</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> DynamicDataSourceContextHolder.getDataSourceType();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Spring boot提供了<code>AbstractRoutingDataSource </code>，来源于<code>package org.springframework.jdbc.datasource.lookup;</code>根据用户定义的规则选择当前的数据源(本文类继承的)，这样我们可以在执行查询之前，设置使用的数据源。实现可动态路由的数据源，在每次数据库查询操作前执行。</p>
+<p>它的抽象方法<code>determineCurrentLookupKey()</code>决定使用哪个数据源，该方法返回需要使用的<code>DataSource</code>的key值，然后根据这个key从<code>resolvedDataSources</code>这个map里取出对应的<code>DataSource</code>，如果找不到，则用默认的<code>resolvedDefaultDataSource</code>。这里使用了比较高级的用法<code>ThreadLocal</code>,详情可以参照<a target="_blank" rel="noopener" href="https://www.cnblogs.com/fsmly/p/11020641.html">这里</a>。</p>
+<p><strong><code>AbstractRoutingDataSource</code>的多数据源动态切换的核心逻辑是</strong>：在程序运行时，把数据源数据源通过 <code>AbstractRoutingDataSource</code> 动态织入到程序中，灵活的进行数据源切换。<br><strong>基于<code>AbstractRoutingDataSource</code>的多数据源动态切换，可以实现读写分离，这么做缺点也很明显，无法动态的增加数据源。</strong></p>
+<p><strong>实现逻辑：</strong></p>
+<ol>
+<li>定义<code>DynamicDataSource</code>类继承抽象类<code>AbstractRoutingDataSource</code>，并实现了<code>DynamicDataSource</code>方法。</li>
+<li>把配置的多个数据源会放在<code>DynamicDataSource</code>的 <code>targetDataSources</code>和<code>defaultTargetDataSource</code>中，然后通过<code>afterPropertiesSet()</code>方法将数据源分别进行复制到<code>resolvedDataSources</code>和<code>resolvedDefaultDataSource</code>中。</li>
+<li>调用<code>determineCurrentLookupKey</code>,重写调用<code>DynamicDataSourceContextHolder</code>类（后续详细说明）的<code>getDataSourceType()</code>方法，获取当前数据源；</li>
+</ol>
+<p>以上全是原理方面介绍，本质就是继承了<code>AbstractRoutingDataSource</code>，使用其中方法动态改变数据源。</p>
+<p>数据源切换处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.blogspringbootdruidmybatisxml.utils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 数据源切换处理</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DynamicDataSourceContextHolder</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger log = LoggerFactory.getLogger(DynamicDataSourceContextHolder.class);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 使用ThreadLocal维护变量，ThreadLocal为每个使用该变量的线程提供独立的变量副本，</span></span><br><span class="line"><span class="comment">     *  所以每一个线程都可以独立地改变自己的副本，而不会影响其它线程所对应的副本。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;String&gt; CONTEXT_HOLDER = <span class="keyword">new</span> ThreadLocal&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 设置数据源的变量</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setDataSourceType</span><span class="params">(String dsType)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;切换到&#123;&#125;数据源&quot;</span>, dsType);</span><br><span class="line">        CONTEXT_HOLDER.set(dsType);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获得数据源的变量</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getDataSourceType</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> CONTEXT_HOLDER.get();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 清空数据源变量</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">clearDataSourceType</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        CONTEXT_HOLDER.remove();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最开始的日志用法为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">目的：使用指定的类XXX初始化日志对象，方便在日志输出的时候，可以打印出日志信息所属的类。</span><br><span class="line"></span><br><span class="line">示例：protected static final Logger logger &#x3D; LoggerFactory.getLogger(XYZ.class);</span><br><span class="line"></span><br><span class="line">     logger.debug(&quot;hello world&quot;);</span><br><span class="line"></span><br><span class="line">     输出：*XYZ:hello world*</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>ThreadLocal</code>维护变量，提供了线程内存储变量的能力，这些变量不同之处在于每一个线程读取的变量是对应的互相独立的。通过get和set方法就可以得到当前线程对应的值。,具体用法可以在代码中注释查看，更详细可以参照<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/3c5d7f09dfbd">博客</a>。</p>
+<p>剩下三个方法分别为，设置，获取，清空数据源。</p>
+<p>枚举类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">package com.example.blogspringbootdruidmybatisxml.utils;</span><br><span class="line"></span><br><span class="line">public enum DataSourceType</span><br><span class="line">&#123;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 主库</span><br><span class="line">     *&#x2F;</span><br><span class="line">    MASTER,</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 从库</span><br><span class="line">     *&#x2F;</span><br><span class="line">    SLAVE</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>定义了两个关键词，对应配置文件的主从两个数据库配置master和slave，常量大都是用public static final 来定义的，但更多的情况下可以使用枚举类，这里不做展开。</p>
+<p>小结：以上三个类都是工具类<code>DynamicDataSource</code>提供了动态数据源配置接口，<code>DynamicDataSourceContextHolder</code>提供了设置，获取，清空数据源的方式，还有日志的配置，<code>DataSourceType</code>枚举了主从库的静态常量字段。</p>
+<h3 id="2-手动注入配置"><a href="#2-手动注入配置" class="headerlink" title="(2)手动注入配置"></a>(2)手动注入配置</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.blogspringbootdruidmybatisxml.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.druid.pool.DruidDataSource;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Value;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * druid 配置属性</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DruidProperties</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;spring.datasource.druid.initialSize&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>     initialSize;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;spring.datasource.druid.minIdle&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>     minIdle;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;spring.datasource.druid.maxActive&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>     maxActive;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;spring.datasource.druid.maxWait&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>     maxWait;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;spring.datasource.druid.timeBetweenEvictionRunsMillis&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>     timeBetweenEvictionRunsMillis;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;spring.datasource.druid.minEvictableIdleTimeMillis&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>     minEvictableIdleTimeMillis;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;spring.datasource.druid.maxEvictableIdleTimeMillis&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>     maxEvictableIdleTimeMillis;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;spring.datasource.druid.validationQuery&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String  validationQuery;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;spring.datasource.druid.testWhileIdle&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> testWhileIdle;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;spring.datasource.druid.testOnBorrow&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> testOnBorrow;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;spring.datasource.druid.testOnReturn&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> testOnReturn;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;spring.datasource.druid.slave.enabled&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> Boolean slaveEnable;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DruidDataSource <span class="title">dataSource</span><span class="params">(DruidDataSource datasource)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">/** 配置初始化大小、最小、最大 */</span></span><br><span class="line">        datasource.setInitialSize(initialSize);</span><br><span class="line">        datasource.setMaxActive(maxActive);</span><br><span class="line">        datasource.setMinIdle(minIdle);</span><br><span class="line">        <span class="comment">/** 配置获取连接等待超时的时间 */</span></span><br><span class="line">        datasource.setMaxWait(maxWait);</span><br><span class="line">        <span class="comment">/** 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 */</span></span><br><span class="line">        datasource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);</span><br><span class="line">        <span class="comment">/** 配置一个连接在池中最小、最大生存的时间，单位是毫秒 */</span></span><br><span class="line">        datasource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);</span><br><span class="line">        datasource.setMaxEvictableIdleTimeMillis(maxEvictableIdleTimeMillis);</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 用来检测连接是否有效的sql，要求是一个查询语句，常用select &#x27;x&#x27;。如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会起作用。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        datasource.setValidationQuery(validationQuery);</span><br><span class="line">        <span class="comment">/** 建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。 */</span></span><br><span class="line">        datasource.setTestWhileIdle(testWhileIdle);</span><br><span class="line">        <span class="comment">/** 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。 */</span></span><br><span class="line">        datasource.setTestOnBorrow(testOnBorrow);</span><br><span class="line">        <span class="comment">/** 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。 */</span></span><br><span class="line">        datasource.setTestOnReturn(testOnReturn);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> datasource;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于我们使用的是阿里的数据源druid，在重新配置时候手动将配置填入，里面很重要的得一点是<code>spring.datasource.druid.slave.enabled</code>，这里配置了是否启用从数据源（slave），手动配置注入后，返回类型为<code>DruidDataSource</code>，即为注入的配置信息，再利用注解<code>@Configuration</code>实现后续的自动注入。</p>
+<p><code>@Configuration</code>用于定义配置类，可替换xml配置文件，被注解的类内部包含有一个或多个被<code>@Bean</code>注解的方法，这些方法将会被<code>AnnotationConfigApplicationContext</code>或<code>AnnotationConfigWebApplicationContext</code>类进行扫描，并用于构建bean定义，初始化Spring容器。</p>
+<h3 id="3-druid-配置多数据源"><a href="#3-druid-配置多数据源" class="headerlink" title="(3)druid 配置多数据源"></a>(3)druid 配置多数据源</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.blogspringbootdruidmybatisxml.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.druid.pool.DruidDataSource;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;</span><br><span class="line"><span class="keyword">import</span> com.example.blogspringbootdruidmybatisxml.utils.DataSourceType;</span><br><span class="line"><span class="keyword">import</span> com.example.blogspringbootdruidmybatisxml.utils.DynamicDataSource;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.context.properties.ConfigurationProperties;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Primary;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.sql.DataSource;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * druid 配置多数据源</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DruidConfig</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> DruidProperties druidProperties;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@ConfigurationProperties(&quot;spring.datasource.druid.master&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">masterDataSource</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        DruidDataSource dataSource = DruidDataSourceBuilder.create().build();</span><br><span class="line">        <span class="keyword">return</span> druidProperties.dataSource(dataSource);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@ConfigurationProperties(&quot;spring.datasource.druid.slave&quot;)</span></span><br><span class="line">    <span class="meta">@ConditionalOnProperty(prefix = &quot;spring.datasource.druid.slave&quot;, name = &quot;enabled&quot;, havingValue = &quot;true&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">slaveDataSource</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        DruidDataSource dataSource = DruidDataSourceBuilder.create().build();</span><br><span class="line">        <span class="keyword">return</span> druidProperties.dataSource(dataSource);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean(name = &quot;dynamicDataSource&quot;)</span></span><br><span class="line">    <span class="meta">@Primary</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DynamicDataSource <span class="title">dataSource</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Map&lt;Object, Object&gt; targetDataSources = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        targetDataSources.put(DataSourceType.MASTER.name(), masterDataSource());</span><br><span class="line">        <span class="keyword">if</span> (druidProperties.slaveEnable)</span><br><span class="line">        &#123;</span><br><span class="line">            targetDataSources.put(DataSourceType.SLAVE.name(), slaveDataSource());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DynamicDataSource(masterDataSource(), targetDataSources);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  首先先注入之前配置的druid配置类。</p>
+<p><code>@Bean</code>与@<code>ConfigurationProperties(&quot;spring.datasource.druid.master&quot;)</code>的最终效果和<code>@Value</code>类似，</p>
+<p><code>@Value</code>注解，它可以通过全限定名进行配置的绑定，组合使用其实就类似于使用多个<code>@Value</code>同时绑定，绑定的对象就是其类型的对象，而且是 <strong>隐式绑定</strong> 的，意味着在配置文件编写的时候需要与对应类的字段名称 <strong>相同</strong>，可以在这里查看<a target="_blank" rel="noopener" href="https://www.cnblogs.com/tian874540961/p/12146467.html">更具体的用法</a>。</p>
+<p>代码中使用其获取主从数据库的具体链接注入到连接池配置中。</p>
+<p><code>@ConditionalOnProperty</code>通过其两个属性<code>name</code>以及<code>havingValue</code>来实现的，其中<code>name</code>用来从<code>application.properties</code>中读取某个属性值。<br>如果该值为空，则返回<code>false</code>;<br>如果值不为空，则将该值与<code>havingValue</code>指定的值进行比较，如果一样则返回<code>true</code>;否则返回<code>false</code>。<br>如果返回值为<code>false</code>，则该<code>configuration</code>不生效；为<code>true</code>则生效。</p>
+<p><code>@Bean</code>注入动态数据源的工具类，<code>@Primary</code>自动装配时当出现多个Bean候选者时，被注解为<code>@Primary</code>的Bean将作为首选者，否则将抛出异常。</p>
+<p>定义一个map，根据配置文件中从数据源的是否开启来配置target目标数据源（核心）。</p>
+<p>最后在启动类上加上<code>@SpringBootApplication(exclude = &#123;DataSourceAutoConfiguration.class&#125;)</code>，代表数据源自动配置失效，由我们自行配置完成。</p>
+<h3 id="4-多数据源的使用"><a href="#4-多数据源的使用" class="headerlink" title="(4)多数据源的使用"></a>(4)多数据源的使用</h3><p>以上的一切都是为这一步而服务的，在哪里使用A数据源，哪里使用B数据源，都在这里定义的，使用的方法展示两种。</p>
+<p>第一种是直接定义在哪里使用从数据源</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.blogspringbootdruidmybatisxml.aspect;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.example.blogspringbootdruidmybatisxml.config.DruidProperties;</span><br><span class="line"><span class="keyword">import</span> com.example.blogspringbootdruidmybatisxml.utils.DataSourceType;</span><br><span class="line"><span class="keyword">import</span> com.example.blogspringbootdruidmybatisxml.utils.DynamicDataSourceContextHolder;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.lang3.StringUtils;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.ProceedingJoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Around;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.annotation.Order;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 多数据源处理</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="meta">@Order(1)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSourceAspect</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> Logger        logger = LoggerFactory.getLogger(getClass());</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> DruidProperties druidProperties;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Pointcut(&quot;execution(* com.example.blogspringbootdruidmybatisxml.controller..*.*(..))&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">BrokerAspect</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Around(&quot;BrokerAspect()&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">around</span><span class="params">(ProceedingJoinPoint point)</span> <span class="keyword">throws</span> Throwable</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!druidProperties.slaveEnable)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> point.proceed();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 获取到当前执行的方法名</span></span><br><span class="line">        String methodName = point.getSignature().getName();</span><br><span class="line">        <span class="keyword">if</span> (isSlave(methodName))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 标记为读库,可以自定义选择数据源</span></span><br><span class="line">            DynamicDataSourceContextHolder.setDataSourceType(DataSourceType.SLAVE.name());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 标记为写库</span></span><br><span class="line">            DynamicDataSourceContextHolder.setDataSourceType(DataSourceType.MASTER.name());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> point.proceed();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">finally</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 销毁数据源 在执行方法之后</span></span><br><span class="line">            DynamicDataSourceContextHolder.clearDataSourceType();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断是否为读库</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> methodName</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isSlave</span><span class="params">(String methodName)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// 方法名以query、find、get开头的方法名走从库</span></span><br><span class="line">        <span class="keyword">return</span> StringUtils.startsWithAny(methodName, <span class="keyword">new</span> String[]&#123;<span class="string">&quot;add&quot;</span>, <span class="string">&quot;update&quot;</span>, <span class="string">&quot;delete&quot;</span>, <span class="string">&quot;search&quot;</span>&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上为一个切面类，关于切面类会专门研究，这里不做展开。由切面类可以知道切点为控制类，并且判断控制类的方法是否以以下自定义的几种开头，如果是则环绕增强使用从数据源，反之则反。</p>
+<p>第二种是利用注解类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.blogspringbootdruidmybatisxml.aspect;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.example.blogspringbootdruidmybatisxml.config.DruidProperties;</span><br><span class="line"><span class="keyword">import</span> com.example.blogspringbootdruidmybatisxml.utils.DataSourceType;</span><br><span class="line"><span class="keyword">import</span> com.example.blogspringbootdruidmybatisxml.utils.DynamicDataSourceContextHolder;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.lang3.StringUtils;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.ProceedingJoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Around;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.annotation.Order;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 多数据源处理</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="meta">@Order(1)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSourceAspect</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> Logger        logger = LoggerFactory.getLogger(getClass());</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> DruidProperties druidProperties;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Around(&quot;@annotation(com.example.blogspringbootdruidmybatisxml.aspect.SelectSlave)&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">arounds</span><span class="params">(ProceedingJoinPoint point)</span> <span class="keyword">throws</span> Throwable</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!druidProperties.slaveEnable)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> point.proceed();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 获取到当前执行的方法名</span></span><br><span class="line">        String methodName = point.getSignature().getName();</span><br><span class="line">        <span class="keyword">if</span> (isSlave(methodName))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 标记为读库,可以自定义选择数据源</span></span><br><span class="line">            DynamicDataSourceContextHolder.setDataSourceType(DataSourceType.SLAVE.name());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 标记为写库</span></span><br><span class="line">            DynamicDataSourceContextHolder.setDataSourceType(DataSourceType.MASTER.name());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> point.proceed();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">finally</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 销毁数据源 在执行方法之后</span></span><br><span class="line">            DynamicDataSourceContextHolder.clearDataSourceType();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断是否为读库</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> methodName</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isSlave</span><span class="params">(String methodName)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// 方法名以query、find、get开头的方法名走从库</span></span><br><span class="line">        <span class="keyword">return</span> StringUtils.startsWithAny(methodName, <span class="keyword">new</span> String[]&#123;<span class="string">&quot;add&quot;</span>, <span class="string">&quot;update&quot;</span>, <span class="string">&quot;delete&quot;</span>, <span class="string">&quot;search&quot;</span>&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同样为切面类，定义切点为自定义注解，也就是说在方法前使用注解标注<code>@SelectSlave</code>,该方法执行时候使用从数据源。</p>
+<p>注解类为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.blogspringbootdruidmybatisxml.aspect;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.ElementType;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.Retention;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.RetentionPolicy;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.Target;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Target(&#123;ElementType.TYPE, ElementType.METHOD&#125;)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> SelectSlave &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>总结：</p>
+<p>沿用之前的springboot整合mybatis项目，改变配置文件，加入主从两个数据源，使用druid的自定义配置方法，利用AOP动态选择数据源，从而实现多数据源的配置。</p>
+
+    
+
+    
+    <div class="page-reward">
+      <a href="javascript:void(0);" class="page-reward-btn tooltip-top" target="_self">
+        <div class="tooltip tooltip-east">
+          <span class="tooltip-item">
+            赏
+          </span>
+          <span class="tooltip-content">
+            <span class="tooltip-text">
+              <span class="tooltip-inner">
+                <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i
+                    class="icon icon-quo-right"></i></p>
+                <div class="reward-box">
+                  
+                  <div class="reward-box-item">
+                    <img class="reward-img" src="/img/alipay.jpg">
+                    <span class="reward-type">支付宝</span>
+                  </div>
+                  
+                  
+                  <div class="reward-box-item">
+                    <img class="reward-img" src="/img/weixin.jpg">
+                    <span class="reward-type">微信</span>
+                  </div>
+                  
+                </div>
+              </span>
+            </span>
+          </span>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/30/3-5-springboot%E6%95%B4%E5%90%88AOP%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" target="_blank">3.5.springboot整合AOP实现多数据源</a>
-  
-    </h1>
-  
+      </a>
+    </div>
+    
 
-
-        <div class="article-info info-on-right">
+    
+    <div class="declare"> 
+      <ul class="post-copyright">
+        <li>
+          <strong>本文作者：</strong>
+          TenPaper
+        </li>
+        <li>
+          <strong>本文链接：</strong>
+          <a href="http://tenpaper.github.io/2020/11/30/3-5-springboot整合AOP实现多数据源/" title="3.5.springboot整合AOP实现多数据源" target="_blank">http://tenpaper.github.io/2020/11/30/3-5-springboot整合AOP实现多数据源/</a>
+        </li>
+        
+        <li>
+          <strong>版权声明： </strong>
           
+          本博客所有文章除特别声明外，均采用 <a href="https://github.com/JoeyBling/hexo-theme-yilia-plus/blob/master/LICENSE" rel="external nofollow" target="_blank">MIT</a> 许可协议。转载请注明出处！
+        </li>
+        
+      </ul>
+    </div>
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -260,7 +418,7 @@
 		</ul>
 	</div>
 
-          
+    
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -273,287 +431,105 @@
 	</div>
 
 
+    
+
+    
+    
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <!-- <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a> -->
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+     <!-- <img src="//pan.baidu.com/share/qrcode?url=http://tenpaper.github.io/2020/11/30/3-5-springboot%E6%95%B4%E5%90%88AOP%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" alt="微信分享二维码"> -->
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+
+    
+    <div class="clearfix"></div>
+  </div>
   </div>
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/27/3-4-springboot%E6%95%B4%E5%90%88mybatis-druid%E7%9A%84xml%E7%89%88/" class="archive-article-date">
-        <time datetime="2020-11-27T01:59:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-27</time>
-</a>
 
+
+<nav id="article-nav">
+  
+  
+    <a href="/2020/11/27/3-4-springboot%E6%95%B4%E5%90%88mybatis-druid%E7%9A%84xml%E7%89%88/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">3.4.springboot整合mybatis-druid的xml版</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/27/3-4-springboot%E6%95%B4%E5%90%88mybatis-druid%E7%9A%84xml%E7%89%88/" target="_blank">3.4.springboot整合mybatis-druid的xml版</a>
-  
-    </h1>
-  
+        
+        
+    </div>
+</aside>
 
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/26/3-3-springboot%E6%95%B4%E5%90%88mybatis-druid%E6%B3%A8%E8%A7%A3%E7%89%88/" class="archive-article-date">
-        <time datetime="2020-11-26T07:26:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-26</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/26/3-3-springboot%E6%95%B4%E5%90%88mybatis-druid%E6%B3%A8%E8%A7%A3%E7%89%88/" target="_blank">3.3.springboot整合mybatis druid注解版</a>
-  
-    </h1>
-  
 
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/25/3-2-springboot%E6%95%B4%E5%90%88Spring-Data-jpa/" class="archive-article-date">
-        <time datetime="2020-11-25T03:05:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-25</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/25/3-2-springboot%E6%95%B4%E5%90%88Spring-Data-jpa/" target="_blank">3.2.springboot整合Spring Data jpa</a>
-  
-    </h1>
-  
 
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/24/2-springboot%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE/" class="archive-article-date">
-        <time datetime="2020-11-24T02:45:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-24</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/24/2-springboot%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE/" target="_blank">2.springboot基础配置</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/24/1-springboot%E5%90%AF%E5%8A%A8/" class="archive-article-date">
-        <time datetime="2020-11-24T00:22:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-24</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/24/1-springboot%E5%90%AF%E5%8A%A8/" target="_blank">1.springboot启动</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -594,10 +570,10 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
-		isCategory: true,
+		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: true,
 		root: "/",
