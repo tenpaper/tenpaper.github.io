@@ -6,20 +6,25 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://tenpaper.github.io">
-  <title>Tag: java | TenPaper的博客</title>
+  <title>4.springboot整合aop | TenPaper的博客</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta name="description" content="安徽江淮汽车集团股份有限公司 | 信息部 | 技术科">
-<meta property="og:type" content="website">
-<meta property="og:title" content="TenPaper的博客">
-<meta property="og:url" content="http://tenpaper.github.io/tags/java/index.html">
+  <meta name="description" content="概念AOP（Aspect Oriented Programming）就是面向切面编程，通过预编译方 式和运行期动态代理实现程序功能的统一维护的一种技术。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="4.springboot整合aop">
+<meta property="og:url" content="http://tenpaper.github.io/2020/12/01/4-springboot%E6%95%B4%E5%90%88aop/index.html">
 <meta property="og:site_name" content="TenPaper的博客">
-<meta property="og:description" content="安徽江淮汽车集团股份有限公司 | 信息部 | 技术科">
+<meta property="og:description" content="概念AOP（Aspect Oriented Programming）就是面向切面编程，通过预编译方 式和运行期动态代理实现程序功能的统一维护的一种技术。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2020/12/01/g6sIq4W2MEe5mib.png">
+<meta property="og:image" content="https://i.loli.net/2020/12/01/dfjyoIBSxt175Dv.png">
+<meta property="article:published_time" content="2020-12-01T06:39:54.000Z">
+<meta property="article:modified_time" content="2020-12-01T08:52:42.223Z">
 <meta property="article:author" content="TenPaper">
-<meta property="article:tag" content="Anhui Jianghuai Automobile Group Co., Ltd. TenPaper">
+<meta property="article:tag" content="java">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/12/01/g6sIq4W2MEe5mib.png">
   
     <link rel="alternative" href="/atom.xml" title="TenPaper的博客" type="application/atom+xml">
   
@@ -214,41 +219,170 @@
               class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-4-springboot整合aop" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
   
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
+    <h1 class="article-title" itemprop="name">
+      4.springboot整合aop
+    </h1>
+  
+
+
+  
+  
+        
+        <span id="busuanzi_container_page_pv" style='display:none' class="archive-article-date">
+              <i class="icon-smile icon"></i> 阅读数：<span id="busuanzi_value_page_pv"></span>次
+        </span>
+
 <a href="/2020/12/01/4-springboot%E6%95%B4%E5%90%88aop/" class="archive-article-date">
         <time datetime="2020-12-01T06:39:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-12-01</time>
 </a>
 
+  
+  
+    
+<div style="margin-top:10px;">
+  <span class="post-time">
+    <span class="post-meta-item-icon">
+      <!-- fonts.scss -->
+      <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
+      <i class="icon-statistics"></i>
+      <span class="post-meta-item-text"> 字数统计:</span>
+      <span class="post-count">2k字</span>
+    </span>
+  </span>
+
+  <span class="post-time">
+    &nbsp; | &nbsp;
+    <span class="post-meta-item-icon">
+      <i class="icon-book icon"></i>
+      <span class="post-meta-item-text"> 阅读时长≈</span>
+      <span class="post-count">7分</span>
+    </span>
+  </span>
+</div>
+
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><p><strong>AOP</strong>（Aspect Oriented Programming）就是面向切面编程，通过预编译方 式和运行期动态代理实现程序功能的统一维护的一种技术。</p>
+<a id="more"></a>
+
+<p>用AOP可以对业务逻辑的各个部分进行隔离，从而使得业务逻辑各部分之间的耦合度降低，提高程序的可重用性，同时提高了开发的效率，这样的做法，对原有代码毫无入侵性，这就是AOP的好处了，把和主业务无关的事情，放到代码外面去做。</p>
+<p>主要功能为日志记录，性能统计，安全控制，事务处理，异常处理等等。将日志记录，性能统计，安全控制，事务处理，异常处理等代码从业务逻辑代码中划分出来，通过对这些行为的分离，我们希望可以将它们独立到非指导业务逻辑的方法中，进而改变这些行为的时候不影响业务逻辑的代码。</p>
+<p>简而言之，在运行时，动态地将代码切入到类的指定方法、指定位置上的编程思想就是面向切面的编程，之前的多数据源里使用了自定义的注解类，使用了AOP环绕增强的方式实现多数据源注解使用。顺带一提，OOP为面向对象编程。</p>
+<p><strong>面向切面编程的“切面”</strong></p>
+<p>切面，顾名思义就是横切面，我们可以沿着业务的脉络将业务一个个横切开来，切开的位置就是一个横切面，可以在切开的位置来定义我们想要的动作，处理多个对象。</p>
+<p>在web层级设计中，web层-&gt;网关层-&gt;服务层-&gt;数据层，每一层之间也是一个切面。编程中，对象与对象之间，方法与方法之间，模块与模块之间都是一个个切面。</p>
+<p>（抽象的程序间隙）</p>
+<p><strong>通知（Advice）</strong></p>
+<p>不同的翻译叫法不同，还有一种叫法是“<strong>增强</strong>”</p>
+<p>切面类有自己要完成的工作，切面类的工作就称为通知。通知定义了切面是做什么以及何时使用。</p>
+<p>“做什么”，即切面类中定义的方法是干什么的；</p>
+<p>“何时使用”，即5种通知类型，是在目标方法执行前，还是目标方法执行后等等；</p>
+<p>“何处做”，即通知定义了做什么，何时使用，但是不知道用在何处，而切点定义的就是告诉通知应该用在（切点）</p>
+<p>（切面是什么，何时执行）</p>
+<p><strong>五种通知类型</strong></p>
+<p>前置通知（Before）：在目标方法被调用之前调用通知功能<br>后置通知（After）：在目标方法完成之后调用通知，此时不会关心方法的输出是什么<br>返回通知（After-returning）：在目标方法成功执行之后调用通知<br>异常通知（After-throwing）：在目标方法抛出异常后调用通知<br>环绕通知（Around）：通知包裹了被通知的方法，在被通知的方法调用之前和之后执行自定义的行为</p>
+<p>执行顺序如下：</p>
+<p><img src="https://i.loli.net/2020/12/01/g6sIq4W2MEe5mib.png" alt="AOP执行顺序.png"></p>
+<p>执行优先级如下：</p>
+<p><img src="https://i.loli.net/2020/12/01/dfjyoIBSxt175Dv.png" alt="AOP优先级.png"></p>
+<p>  <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_32331073/article/details/80596084">借鉴来源</a></p>
+<p><strong>连接点（Join point）</strong></p>
+<p>连接点是在应用执行过程中能够插入切面的一个点。这些点可以是调用方法时、甚至修改一个字段时。例如方法执行、类初始化、异常处理， 在Spring AOP中，接入点始终表示方法执行。</p>
+<p>被通知的类中的方法都可能成为切点，所以这些都是连接点，定义成切点之后，这个连接点就变成了切点，通知的类可能是一个类，也有可能是一个包底下的所有类，所以连接点可以成千上万来记，是一个虚概念，可以把连接点看成是切点的集合。</p>
+<p>(插入切面的点)</p>
+<p><strong>切点（Pointcut）</strong><br>一个切面并不需要通知应用的所有连接点，切点有助于缩小切面所通知的连接点范围。如果说通知定义了切面的“什么”和“何时”的话，那么切点就定义了“何处”。因此，切点其实就是定义了需要执行在哪些连接点上执行通知。</p>
+<p>(被通知的连接点)(切面何处执行)</p>
+<p><strong>切面（Aspect）</strong><br>  切面是通知和切点的结合。通知和切点共同定义了切面的全部内容——它是什么，在何时和在何处完成其功能。</p>
+<p><strong>引入（Introduction）</strong><br>引入允许我们向现有的类添加新方法或属性，是一种特殊的增强，它为类添加一些属性和方法</p>
+<p><strong>织入（Weaving）</strong><br>织入是把切面应用到目标对象并创建新的代理对象的过程。切面在指定的连接点被织入到目标对象中。在目标对象的生命周期中有很多个点可以进行织入：</p>
+<p>编译期（compile time ）(使用AspectJ编译器)：切面在目标类编译时被织入。这种方式需要特殊的编译器。AspectJ的织入编译器就是以这种方式织入切面的。</p>
+<p>类加载期（load time）：切面在目标类加载到JVM时被织入。这种方式需要特殊的类加载器，它可以在目标类被引入应用之前增强该目标类的字节码。AspectJ 5的加载时织入就支持这种方式织入切面。</p>
+<p>运行期（runtime）：切面在应用运行的某个时刻被织入。一般情况下，在织入切面时，AOP容器会为目标对象动态的创建一个代理对象。Spring AOP就是以这种方式织入切面的。</p>
+<p><strong>代理（Agent）</strong></p>
+<p>代理类其实是在之前类的基础上做了一层封装。java中有静态代理、JDK动态代理、CGLib动态代理的方式。静态代理指的是代理类是在编译期就存在的，相反动态代理则是在程序运行期动态生成的。</p>
+<p>一个类被AOP织入增强后，会产生一个结果类，该类融合了原类和增强逻辑的代理类（Spring向）。</p>
+<p>代理为其他对象提供一种代理以控制对这个对象的访问，具体可以查看这篇<a target="_blank" rel="noopener" href="https://www.cnblogs.com/teach/p/10763845.html">帖子</a>。</p>
+<p><strong>AOP的实现者</strong></p>
+<p><code>AspectJ</code>：Aspect是目前最完善的AOP语言，对java编程语言进行了扩展，定义了AOP语法，能够在编译期提供横切代码的织入。AspectJ提供了俩种横切实现机制，一种称为动态横切，另一种称为静态横切</p>
+<p><code>AspectWerkz</code>：基于java的简单、动态和轻量级AOP框架，支持运行期或类装载期织入横切代码，它拥有一个特殊的类装载器，它与AspectJ项目已经合并，第一个发布版本是AspectJ5，扩展AspectJ语言，以基于注解的方式支持类似AspectJ的代码风格。</p>
+<p><code>JBoss AOP</code>：JBoss是一个开源的符合J2EE规范的应用服务器，作为J2EE规范的补充，JBoss中引入了AOP框架，为普通java类提供了J2EE服务，而无需遵循EJB规范。JBoss提供类载入时，使用Javassist对字节码操作实现动态AOP框架。</p>
+<p><code>Spring AOP</code>：Spring AOP使用纯java实现，不需要专门的编译过程，不需要特殊的类装载器，它在运行期通过代理方式向目标类织入增强代码。Spring并不尝试提供最完整的AOP实现，主要侧重于提供一种和Spring IOC容器整合的AOP实现，以解决企业级开发中常见问题。</p>
+<p><a target="_blank" rel="noopener" href="https://baijiahao.baidu.com/s?id=1627887363500781598&wfr=spider&for=pc">理论来源</a></p>
+<p>因为仅仅是研究基于springboot的AOP，所有以上某些概念性理解实际上用不上，AOP博大精深，我们仅仅也是学会使用其中的某些模块的某些方法，注重于实际使用和问题的解决。</p>
+<p>本文旁征博引，如有雷同纯属必然，如有侵权请联系我，我会立即删除。</p>
+
+    
+
+    
+    <div class="page-reward">
+      <a href="javascript:void(0);" class="page-reward-btn tooltip-top" target="_self">
+        <div class="tooltip tooltip-east">
+          <span class="tooltip-item">
+            赏
+          </span>
+          <span class="tooltip-content">
+            <span class="tooltip-text">
+              <span class="tooltip-inner">
+                <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i
+                    class="icon icon-quo-right"></i></p>
+                <div class="reward-box">
+                  
+                  <div class="reward-box-item">
+                    <img class="reward-img" src="/img/alipay.jpg">
+                    <span class="reward-type">支付宝</span>
+                  </div>
+                  
+                  
+                  <div class="reward-box-item">
+                    <img class="reward-img" src="/img/weixin.jpg">
+                    <span class="reward-type">微信</span>
+                  </div>
+                  
+                </div>
+              </span>
+            </span>
+          </span>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/12/01/4-springboot%E6%95%B4%E5%90%88aop/" target="_blank">4.springboot整合aop</a>
-  
-    </h1>
-  
+      </a>
+    </div>
+    
 
-
-        <div class="article-info info-on-right">
+    
+    <div class="declare"> 
+      <ul class="post-copyright">
+        <li>
+          <strong>本文作者：</strong>
+          TenPaper
+        </li>
+        <li>
+          <strong>本文链接：</strong>
+          <a href="http://tenpaper.github.io/2020/12/01/4-springboot整合aop/" title="4.springboot整合aop" target="_blank">http://tenpaper.github.io/2020/12/01/4-springboot整合aop/</a>
+        </li>
+        
+        <li>
+          <strong>版权声明： </strong>
           
+          本博客所有文章除特别声明外，均采用 <a href="https://github.com/JoeyBling/hexo-theme-yilia-plus/blob/master/LICENSE" rel="external nofollow" target="_blank">MIT</a> 许可协议。转载请注明出处！
+        </li>
+        
+      </ul>
+    </div>
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -260,7 +394,7 @@
 		</ul>
 	</div>
 
-          
+    
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -273,449 +407,105 @@
 	</div>
 
 
+    
+
+    
+    
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <!-- <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a> -->
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+     <!-- <img src="//pan.baidu.com/share/qrcode?url=http://tenpaper.github.io/2020/12/01/4-springboot%E6%95%B4%E5%90%88aop/" alt="微信分享二维码"> -->
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+
+    
+    <div class="clearfix"></div>
+  </div>
   </div>
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/30/3-5-springboot%E6%95%B4%E5%90%88AOP%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" class="archive-article-date">
-        <time datetime="2020-11-30T06:37:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-30</time>
-</a>
 
+
+<nav id="article-nav">
+  
+  
+    <a href="/2020/11/30/3-5-springboot%E6%95%B4%E5%90%88AOP%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">3.5.springboot整合AOP实现多数据源</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/30/3-5-springboot%E6%95%B4%E5%90%88AOP%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" target="_blank">3.5.springboot整合AOP实现多数据源</a>
-  
-    </h1>
-  
+        
+        
+    </div>
+</aside>
 
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/27/3-4-springboot%E6%95%B4%E5%90%88mybatis-druid%E7%9A%84xml%E7%89%88/" class="archive-article-date">
-        <time datetime="2020-11-27T01:59:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-27</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/27/3-4-springboot%E6%95%B4%E5%90%88mybatis-druid%E7%9A%84xml%E7%89%88/" target="_blank">3.4.springboot整合mybatis-druid的xml版</a>
-  
-    </h1>
-  
 
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/26/3-3-springboot%E6%95%B4%E5%90%88mybatis-druid%E6%B3%A8%E8%A7%A3%E7%89%88/" class="archive-article-date">
-        <time datetime="2020-11-26T07:26:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-26</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/26/3-3-springboot%E6%95%B4%E5%90%88mybatis-druid%E6%B3%A8%E8%A7%A3%E7%89%88/" target="_blank">3.3.springboot整合mybatis druid注解版</a>
-  
-    </h1>
-  
 
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/25/3-2-springboot%E6%95%B4%E5%90%88Spring-Data-jpa/" class="archive-article-date">
-        <time datetime="2020-11-25T03:05:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-25</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/25/3-2-springboot%E6%95%B4%E5%90%88Spring-Data-jpa/" target="_blank">3.2.springboot整合Spring Data jpa</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/24/3-1-springboot%E6%95%B4%E5%90%88JdbcTemplate/" class="archive-article-date">
-        <time datetime="2020-11-24T15:14:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-24</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/24/3-1-springboot%E6%95%B4%E5%90%88JdbcTemplate/" target="_blank">3.1.springboot整合JdbcTemplate</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基础原理//" class="article-tag-list-link color5">springboot基础原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/24/3-springboot%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BF%E9%97%AE%E5%B7%A5%E5%85%B7/" class="archive-article-date">
-        <time datetime="2020-11-24T08:35:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-24</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/24/3-springboot%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BF%E9%97%AE%E5%B7%A5%E5%85%B7/" target="_blank">3.springboot数据库访问工具</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基础原理//" class="article-tag-list-link color5">springboot基础原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/24/2-springboot%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE/" class="archive-article-date">
-        <time datetime="2020-11-24T02:45:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-24</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/24/2-springboot%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE/" target="_blank">2.springboot基础配置</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/24/1-springboot%E5%90%AF%E5%8A%A8/" class="archive-article-date">
-        <time datetime="2020-11-24T00:22:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-24</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/24/1-springboot%E5%90%AF%E5%8A%A8/" target="_blank">1.springboot启动</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -756,9 +546,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: true,
