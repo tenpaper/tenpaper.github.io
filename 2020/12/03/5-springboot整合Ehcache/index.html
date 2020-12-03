@@ -10,16 +10,16 @@
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta name="description" content="1.概念Spring 定义 CacheManager 和 Cache 接口用来统一不同的缓存技术。例如 JCache、 EhCache、 Hazelcast、 Guava、 Redis 等。在使用 Spring 集成 Cache 的时候，我们需要注册实现的 CacheManager 的 Bean。 通过查询autoconfigure包，可以发现在cache中，Spring Boot 自动配置了多个">
+  <meta name="description" content="1.概念Spring 定义 CacheManager 和 Cache 接口用来统一不同的缓存技术。例如 JCache、 EhCache、 Hazelcast、 Guava、 Redis 等。在使用 Spring 集成 Cache 的时候，我们需要注册实现的 CacheManager 的 Bean。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="5.springboot整合Ehcache">
 <meta property="og:url" content="http://tenpaper.github.io/2020/12/03/5-springboot%E6%95%B4%E5%90%88Ehcache/index.html">
 <meta property="og:site_name" content="TenPaper的博客">
-<meta property="og:description" content="1.概念Spring 定义 CacheManager 和 Cache 接口用来统一不同的缓存技术。例如 JCache、 EhCache、 Hazelcast、 Guava、 Redis 等。在使用 Spring 集成 Cache 的时候，我们需要注册实现的 CacheManager 的 Bean。 通过查询autoconfigure包，可以发现在cache中，Spring Boot 自动配置了多个">
+<meta property="og:description" content="1.概念Spring 定义 CacheManager 和 Cache 接口用来统一不同的缓存技术。例如 JCache、 EhCache、 Hazelcast、 Guava、 Redis 等。在使用 Spring 集成 Cache 的时候，我们需要注册实现的 CacheManager 的 Bean。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://i.loli.net/2020/12/03/Zg4pHtensdlJ5wD.jpg">
 <meta property="article:published_time" content="2020-12-03T08:42:50.000Z">
-<meta property="article:modified_time" content="2020-12-03T09:36:02.540Z">
+<meta property="article:modified_time" content="2020-12-03T09:41:46.950Z">
 <meta property="article:author" content="TenPaper">
 <meta property="article:tag" content="java">
 <meta name="twitter:card" content="summary">
@@ -272,6 +272,8 @@
   <div class="article-entry" itemprop="articleBody">
     
     <h1 id="1-概念"><a href="#1-概念" class="headerlink" title="1.概念"></a>1.概念</h1><p>Spring 定义 CacheManager 和 Cache 接口用来统一不同的缓存技术。例如 JCache、 EhCache、 Hazelcast、 Guava、 Redis 等。在使用 Spring 集成 Cache 的时候，我们需要注册实现的 CacheManager 的 Bean。</p>
+<a id="more"></a>
+
 <p>通过查询autoconfigure包，可以发现在cache中，Spring Boot 自动配置了多个 CacheManager 的实现，JcacheCacheConfiguration、 EhCacheCacheConfiguration、HazelcastCacheConfiguration、GuavaCacheConfiguration、RedisCacheConfiguration、SimpleCacheConfiguration 等</p>
 <p><img src="https://i.loli.net/2020/12/03/Zg4pHtensdlJ5wD.jpg" alt="autoconfigure自动实现缓存目录树.jpg"></p>
 <p>在 Spring Boot中，通过@EnableCaching注解自动化配置合适的缓存管理器（CacheManager），Spring Boot根据下面的顺序去侦测缓存提供者：</p>
