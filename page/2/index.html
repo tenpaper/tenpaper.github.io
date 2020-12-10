@@ -221,6 +221,106 @@
             
 
   
+    <article id="post-3-5-springboot整合AOP实现多数据源" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="/2020/11/30/3-5-springboot%E6%95%B4%E5%90%88AOP%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" target="_blank">3.5.springboot整合AOP实现多数据源</a>
+  
+    </h1>
+  
+
+
+  
+  
+<a href="/2020/11/30/3-5-springboot%E6%95%B4%E5%90%88AOP%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" class="archive-article-date">
+        <time datetime="2020-11-30T06:37:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-30</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <p>实际生产环境使用的时候，为了提高效率，一般会使用主从同步，读写分离的方式，也会出现不同数据存放于不同数据库的情况，而上一章使用mybatis的方式只能对一个数据库进行操作，针对生产实际需求，本章研究如何对不同数据库进行操作，也就是多数据源。</p>
+<p>沿用之前springboot集成mybatis的xml版本，<a href="%5Bhttps://tenpaper.github.io/2020/11/27/3-4-springboot%E6%95%B4%E5%90%88mybatis-druid%E7%9A%84xml%E7%89%88/%5D(https://tenpaper.github.io/2020/11/27/3-4-springboot%E6%95%B4%E5%90%88mybatis-druid%E7%9A%84xml%E7%89%88/)">链接在此</a>，在此基础上使用面向切面编程（AOP）的方式进行改良。</p>
+    
+    <a class="article-more-a" href="/2020/11/30/3-5-springboot%E6%95%B4%E5%90%88AOP%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/#more">more >></a>
+    
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="/2020/11/30/3-5-springboot%E6%95%B4%E5%90%88AOP%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-3-4-springboot整合mybatis-druid的xml版" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
