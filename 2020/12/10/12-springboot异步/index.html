@@ -6,19 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://tenpaper.github.io">
-  <title>Archives | TenPaper的博客</title>
+  <title>12.springboot异步 | TenPaper的博客</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta name="description" content="安徽江淮汽车集团股份有限公司 | 信息部 | 技术科">
-<meta property="og:type" content="website">
-<meta property="og:title" content="TenPaper的博客">
-<meta property="og:url" content="http://tenpaper.github.io/archives/page/2/index.html">
+  <meta name="description" content="java程序大多数情况下都是同步实现交互的，但实际开发使用中会出现响应迟缓的现象，但使用的时候我们要求他可以立即反馈，但实际执行在这之后，这就是异步。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="12.springboot异步">
+<meta property="og:url" content="http://tenpaper.github.io/2020/12/10/12-springboot%E5%BC%82%E6%AD%A5/index.html">
 <meta property="og:site_name" content="TenPaper的博客">
-<meta property="og:description" content="安徽江淮汽车集团股份有限公司 | 信息部 | 技术科">
+<meta property="og:description" content="java程序大多数情况下都是同步实现交互的，但实际开发使用中会出现响应迟缓的现象，但使用的时候我们要求他可以立即反馈，但实际执行在这之后，这就是异步。">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-10T13:59:11.000Z">
+<meta property="article:modified_time" content="2020-12-10T14:36:10.432Z">
 <meta property="article:author" content="TenPaper">
-<meta property="article:tag" content="Anhui Jianghuai Automobile Group Co., Ltd. TenPaper">
+<meta property="article:tag" content="java">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="TenPaper的博客" type="application/atom+xml">
@@ -214,41 +216,168 @@
               class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-12-springboot异步" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/12/01/4-springboot%E6%95%B4%E5%90%88aop/" class="archive-article-date">
-        <time datetime="2020-12-01T06:39:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-12-01</time>
-</a>
-
-        </div>
-    	 
+      <header class="article-header">
   
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/12/01/4-springboot%E6%95%B4%E5%90%88aop/" target="_blank">4.springboot整合aop</a>
   
+    <h1 class="article-title" itemprop="name">
+      12.springboot异步
     </h1>
   
 
 
-        <div class="article-info info-on-right">
+  
+  
+        
+        <span id="busuanzi_container_page_pv" style='display:none' class="archive-article-date">
+              <i class="icon-smile icon"></i> 阅读数：<span id="busuanzi_value_page_pv"></span>次
+        </span>
+
+<a href="/2020/12/10/12-springboot%E5%BC%82%E6%AD%A5/" class="archive-article-date">
+        <time datetime="2020-12-10T13:59:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-12-10</time>
+</a>
+
+  
+  
+    
+<div style="margin-top:10px;">
+  <span class="post-time">
+    <span class="post-meta-item-icon">
+      <!-- fonts.scss -->
+      <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
+      <i class="icon-statistics"></i>
+      <span class="post-meta-item-text"> 字数统计:</span>
+      <span class="post-count">1.8k字</span>
+    </span>
+  </span>
+
+  <span class="post-time">
+    &nbsp; | &nbsp;
+    <span class="post-meta-item-icon">
+      <i class="icon-book icon"></i>
+      <span class="post-meta-item-text"> 阅读时长≈</span>
+      <span class="post-count">7分</span>
+    </span>
+  </span>
+</div>
+
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <p>java程序大多数情况下都是同步实现交互的，但实际开发使用中会出现响应迟缓的现象，但使用的时候我们要求他可以立即反馈，但实际执行在这之后，这就是异步。</p>
+<a id="more"></a>
+
+<h1 id="0-概念"><a href="#0-概念" class="headerlink" title="0.概念"></a>0.概念</h1><p>同步调用：整个处理过程顺序执行，当各个过程都执行完毕，并返回结果。</p>
+<p>异步调用：只是发送了调用的指令，调用者无需等待被调用的方法完全执行完毕；而是继续执行下面的流程。</p>
+<p>比如一个发邮件的需求，从请求开始到结束一般在20秒收到反馈，但实际业务需要你瞬间可以得到返回结果判断，可以使用消息队列解决此类问题，但明显是高射炮打蚊子，而且消息队列的使用还有其本身的问题在里面，使用异步调用，就可以实现。</p>
+<h1 id="1-异步处理方式"><a href="#1-异步处理方式" class="headerlink" title="1.异步处理方式"></a>1.异步处理方式</h1><p>在Java中，一般在处理类似的场景之时，都是基于创建独立的线程去完成相应的异步调用逻辑，通过主线程和不同的线程之间的执行流程，从而在启动独立的线程之后，主线程继续执行而不会产生停滞等待的情况。</p>
+<p>在Spring中，基于@Async标注的方法，称之为异步方法；这些方法将在执行的时候，将会在独立的线程中被执行，调用者无需等待它的完成，即可继续其他的操作。</p>
+<h1 id="2-无返回值得异步调用"><a href="#2-无返回值得异步调用" class="headerlink" title="2.无返回值得异步调用"></a>2.无返回值得异步调用</h1><p>使用异步调用不需要加入特别依赖，在执行方法上加入@Async注解，并且在相应的类上或者启动类上加入注解@EnableAsync开启异步任务。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.springbootasync.controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.example.springbootasync.service.AsyncService;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.scheduling.annotation.EnableAsync;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.GetMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMethod;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ExecutionException;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.Future;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> tenpaper</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020/12/7 12:22</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@EnableAsync</span> <span class="comment">// 开启异步任务</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AsyncController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AsyncService asyncService;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//无返回值的异步调用</span></span><br><span class="line">    <span class="meta">@RequestMapping(value = &quot;/hello&quot;,method = RequestMethod.GET)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">testAsyncNoRetrun</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">long</span> start = System.currentTimeMillis();</span><br><span class="line">        asyncService.doNoReturn();</span><br><span class="line">        <span class="keyword">return</span> String.format(<span class="string">&quot;任务执行成功,耗时&#123;%s&#125;&quot;</span>, System.currentTimeMillis() - start);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.springbootasync.service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.scheduling.annotation.Async;</span><br><span class="line"><span class="keyword">import</span> org.springframework.scheduling.annotation.AsyncResult;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.Future;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> tenpaper</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020/12/7 12:22</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AsyncService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//无返回值的异步调用</span></span><br><span class="line">    <span class="meta">@Async</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doNoReturn</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 这个方法执行需要三秒</span></span><br><span class="line">            Thread.sleep(<span class="number">3000</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;方法执行结束&quot;</span> + <span class="keyword">new</span> Date());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>写一个手动延迟三秒的方法，在调用时候做计时，分别查看返回和实际执行时间。</p>
+<p><a target="_blank" rel="noopener" href="http://localhost:8080/hello">http://localhost:8080/hello</a></p>
+<p>返回值：瞬间可以得到响应时间</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">任务执行成功,耗时&#123;1&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后三秒后，在控制台可以打印出相应的日期，完成了无返回值的异步调用</p>
+<h2 id="3-有返回值得异步调用"><a href="#3-有返回值得异步调用" class="headerlink" title="3.有返回值得异步调用"></a>3.有返回值得异步调用</h2><p>加入方法和控制类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//带返回值的异步调用</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/hi&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">testAsyncReturn</span><span class="params">()</span> <span class="keyword">throws</span> ExecutionException, InterruptedException </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> start = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">    Map&lt;String, Object&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    List&lt;Future&lt;String&gt;&gt; futures = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">        Future&lt;String&gt; future = asyncService.doReturn(i);</span><br><span class="line">        futures.add(future);</span><br><span class="line">    &#125;</span><br><span class="line">    List&lt;String&gt; response = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (Future future : futures) &#123;</span><br><span class="line">        String string = (String) future.get();</span><br><span class="line">        response.add(string);</span><br><span class="line">    &#125;</span><br><span class="line">    map.put(<span class="string">&quot;data&quot;</span>, response);</span><br><span class="line">    map.put(<span class="string">&quot;消耗时间&quot;</span>, String.format(<span class="string">&quot;任务执行成功,耗时&#123;%s&#125;毫秒&quot;</span>, System.currentTimeMillis() - start));</span><br><span class="line">    <span class="keyword">return</span> map;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//带返回值的异步调用</span></span><br><span class="line"><span class="meta">@Async</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Future&lt;String&gt; <span class="title">doReturn</span><span class="params">(<span class="keyword">int</span> i)</span></span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 这个方法需要调用500毫秒</span></span><br><span class="line">        Thread.sleep(<span class="number">500</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 消息汇总</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> AsyncResult&lt;&gt;(String.format(<span class="string">&quot;这个是第&#123;%s&#125;个异步调用的证书&quot;</span>, i));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>响应结果：大约一秒完成返回</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">&quot;data&quot;</span>:[<span class="string">&quot;这个是第&#123;0&#125;个异步调用的证书&quot;</span>,<span class="string">&quot;这个是第&#123;1&#125;个异步调用的证书&quot;</span>,<span class="string">&quot;这个是第&#123;2&#125;个异步调用的证书&quot;</span>,<span class="string">&quot;这个是第&#123;3&#125;个异步调用的证书&quot;</span>,<span class="string">&quot;这个是第&#123;4&#125;个异步调用的证书&quot;</span>,<span class="string">&quot;这个是第&#123;5&#125;个异步调用的证书&quot;</span>,<span class="string">&quot;这个是第&#123;6&#125;个异步调用的证书&quot;</span>,<span class="string">&quot;这个是第&#123;7&#125;个异步调用的证书&quot;</span>,<span class="string">&quot;这个是第&#123;8&#125;个异步调用的证书&quot;</span>,<span class="string">&quot;这个是第&#123;9&#125;个异步调用的证书&quot;</span>],<span class="string">&quot;消耗时间&quot;</span>:<span class="string">&quot;任务执行成功,耗时&#123;1003&#125;毫秒&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用需要注意的是：返回的数据类型为Future类型，其为一个接口，具体的结果类型为AsyncResult，AsyncResult为Spring实现的Future实现类。</p>
+<p>异步和事务同时使用会使事务出现异常，以将需要事务管理操作的方法放置到异步方法内部，在内部被调用的方法上添加@Transactional。</p>
+<h1 id="4-自定义异步线程池配置"><a href="#4-自定义异步线程池配置" class="headerlink" title="4.自定义异步线程池配置"></a>4.自定义异步线程池配置</h1><p>通过<code>ThreadPoolTaskExecutor</code>的一些方法自定义了一个线程池</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.springbootasync.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ThreadPoolExecutor;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> tenpaper</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020/12/10 22:29</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AsyncPoolConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ThreadPoolTaskExecutor <span class="title">asyncThreadPoolTaskExecutor</span><span class="params">()</span></span>&#123;</span><br><span class="line">        ThreadPoolTaskExecutor executor = <span class="keyword">new</span> ThreadPoolTaskExecutor();</span><br><span class="line">        executor.setCorePoolSize(<span class="number">20</span>);</span><br><span class="line">        executor.setMaxPoolSize(<span class="number">200</span>);</span><br><span class="line">        executor.setQueueCapacity(<span class="number">25</span>);</span><br><span class="line">        executor.setKeepAliveSeconds(<span class="number">200</span>);</span><br><span class="line">        executor.setThreadNamePrefix(<span class="string">&quot;asyncThread&quot;</span>);</span><br><span class="line">        executor.setWaitForTasksToCompleteOnShutdown(<span class="keyword">true</span>);</span><br><span class="line">        executor.setAwaitTerminationSeconds(<span class="number">60</span>);</span><br><span class="line">        executor.setRejectedExecutionHandler(<span class="keyword">new</span> ThreadPoolExecutor.CallerRunsPolicy());</span><br><span class="line">        executor.initialize();</span><br><span class="line">        <span class="keyword">return</span> executor;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>说明：</p>
+<p>corePoolSize：线程池核心线程的数量，默认值为1（这就是默认情况下的异步线程池配置使得线程不能被重用的原因）。</p>
+<p>maxPoolSize：线程池维护的线程的最大数量，只有当核心线程都被用完并且缓冲队列满后，才会开始申超过请核心线程数的线程，默认值为Integer.MAX_VALUE。</p>
+<p>queueCapacity：缓冲队列。</p>
+<p>keepAliveSeconds：超出核心线程数外的线程在空闲时候的最大存活时间，默认为60秒。</p>
+<p>threadNamePrefix：线程名前缀。</p>
+<p>waitForTasksToCompleteOnShutdown：是否等待所有线程执行完毕才关闭线程池，默认值为false。</p>
+<p>awaitTerminationSeconds：waitForTasksToCompleteOnShutdown的等待的时长，默认值为0，即不等待。</p>
+<p>rejectedExecutionHandler：当没有线程可以被使用时的处理策略（拒绝任务），默认策略为abortPolicy，包含下面四种策略：</p>
+<p>​    1.callerRunsPolicy：用于被拒绝任务的处理程序，它直接在 execute 方法的调用线程中运行被拒绝的任务；如果执行程序已关闭，则会丢弃该任务。</p>
+<p>​    2.abortPolicy：直接抛出java.util.concurrent.RejectedExecutionException异常。</p>
+<p>​    3.discardOldestPolicy：当线程池中的数量等于最大线程数时、抛弃线程池中最后一个要执行的任务，并执行新传入的任务。</p>
+<p>​    4.discardPolicy：当线程池中的数量等于最大线程数时，不做任何动作。</p>
+<p>要使用该线程池，只需要在@Async注解上指定线程池Bean名称即可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Async(&quot;asyncThreadPoolTaskExecutor&quot;)</span></span><br></pre></td></tr></table></figure>
+    
+
+    
+    <div class="page-reward">
+      <a href="javascript:void(0);" class="page-reward-btn tooltip-top" target="_self">
+        <div class="tooltip tooltip-east">
+          <span class="tooltip-item">
+            赏
+          </span>
+          <span class="tooltip-content">
+            <span class="tooltip-text">
+              <span class="tooltip-inner">
+                <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i
+                    class="icon icon-quo-right"></i></p>
+                <div class="reward-box">
+                  
+                  <div class="reward-box-item">
+                    <img class="reward-img" src="/img/alipay.jpg">
+                    <span class="reward-type">支付宝</span>
+                  </div>
+                  
+                  
+                  <div class="reward-box-item">
+                    <img class="reward-img" src="/img/weixin.jpg">
+                    <span class="reward-type">微信</span>
+                  </div>
+                  
+                </div>
+              </span>
+            </span>
+          </span>
+        </div>
+      </a>
+    </div>
+    
+
+    
+    <div class="declare"> 
+      <ul class="post-copyright">
+        <li>
+          <strong>本文作者：</strong>
+          TenPaper
+        </li>
+        <li>
+          <strong>本文链接：</strong>
+          <a href="http://tenpaper.github.io/2020/12/10/12-springboot异步/" title="12.springboot异步" target="_blank">http://tenpaper.github.io/2020/12/10/12-springboot异步/</a>
+        </li>
+        
+        <li>
+          <strong>版权声明： </strong>
           
+          本博客所有文章除特别声明外，均采用 <a href="https://github.com/JoeyBling/hexo-theme-yilia-plus/blob/master/LICENSE" rel="external nofollow" target="_blank">MIT</a> 许可协议。转载请注明出处！
+        </li>
+        
+      </ul>
+    </div>
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -260,7 +389,7 @@
 		</ul>
 	</div>
 
-          
+    
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -273,485 +402,105 @@
 	</div>
 
 
+    
+
+    
+    
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <!-- <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a> -->
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+     <!-- <img src="//pan.baidu.com/share/qrcode?url=http://tenpaper.github.io/2020/12/10/12-springboot%E5%BC%82%E6%AD%A5/" alt="微信分享二维码"> -->
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+
+    
+    <div class="clearfix"></div>
+  </div>
   </div>
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/30/3-5-springboot%E6%95%B4%E5%90%88AOP%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" class="archive-article-date">
-        <time datetime="2020-11-30T06:37:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-30</time>
-</a>
 
+
+<nav id="article-nav">
+  
+  
+    <a href="/2020/12/10/11-springboot%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">11.springboot解决跨域问题</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/30/3-5-springboot%E6%95%B4%E5%90%88AOP%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" target="_blank">3.5.springboot整合AOP实现多数据源</a>
-  
-    </h1>
-  
+        
+        
+    </div>
+</aside>
 
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/27/3-4-springboot%E6%95%B4%E5%90%88mybatis-druid%E7%9A%84xml%E7%89%88/" class="archive-article-date">
-        <time datetime="2020-11-27T01:59:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-27</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/27/3-4-springboot%E6%95%B4%E5%90%88mybatis-druid%E7%9A%84xml%E7%89%88/" target="_blank">3.4.springboot整合mybatis-druid的xml版</a>
-  
-    </h1>
-  
 
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/26/3-3-springboot%E6%95%B4%E5%90%88mybatis-druid%E6%B3%A8%E8%A7%A3%E7%89%88/" class="archive-article-date">
-        <time datetime="2020-11-26T07:26:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-26</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/26/3-3-springboot%E6%95%B4%E5%90%88mybatis-druid%E6%B3%A8%E8%A7%A3%E7%89%88/" target="_blank">3.3.springboot整合mybatis druid注解版</a>
-  
-    </h1>
-  
 
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/25/3-2-springboot%E6%95%B4%E5%90%88Spring-Data-jpa/" class="archive-article-date">
-        <time datetime="2020-11-25T03:05:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-25</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/25/3-2-springboot%E6%95%B4%E5%90%88Spring-Data-jpa/" target="_blank">3.2.springboot整合Spring Data jpa</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/24/3-1-springboot%E6%95%B4%E5%90%88JdbcTemplate/" class="archive-article-date">
-        <time datetime="2020-11-24T15:14:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-24</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/24/3-1-springboot%E6%95%B4%E5%90%88JdbcTemplate/" target="_blank">3.1.springboot整合JdbcTemplate</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基础原理//" class="article-tag-list-link color5">springboot基础原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/24/3-springboot%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BF%E9%97%AE%E5%B7%A5%E5%85%B7/" class="archive-article-date">
-        <time datetime="2020-11-24T08:35:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-24</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/24/3-springboot%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BF%E9%97%AE%E5%B7%A5%E5%85%B7/" target="_blank">3.springboot数据库访问工具</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基础原理//" class="article-tag-list-link color5">springboot基础原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/24/2-springboot%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE/" class="archive-article-date">
-        <time datetime="2020-11-24T02:45:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-24</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/24/2-springboot%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE/" target="_blank">2.springboot基础配置</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/24/1-springboot%E5%90%AF%E5%8A%A8/" class="archive-article-date">
-        <time datetime="2020-11-24T00:22:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-24</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/24/1-springboot%E5%90%AF%E5%8A%A8/" target="_blank">1.springboot启动</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/springboot基本原理//" class="article-tag-list-link color5">springboot基本原理</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2020/11/23/%E4%BD%BF%E7%94%A8%E6%89%B9%E5%A4%84%E7%90%86-bat%E8%A7%A3%E5%86%B3%E5%B1%8F%E4%BF%9D%E9%97%AE%E9%A2%98%E5%92%8C%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E5%85%B3%E6%9C%BA/" class="archive-article-date">
-        <time datetime="2020-11-23T02:27:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-23</time>
-</a>
-
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2020/11/23/%E4%BD%BF%E7%94%A8%E6%89%B9%E5%A4%84%E7%90%86-bat%E8%A7%A3%E5%86%B3%E5%B1%8F%E4%BF%9D%E9%97%AE%E9%A2%98%E5%92%8C%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E5%85%B3%E6%9C%BA/" target="_blank">使用批处理.bat解决屏保问题和实现自动关机</a>
-  
-    </h1>
-  
-
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/archives/">&amp;laquo; Prev</a><a class="page-number" href="/archives/">1</a><span class="page-number current">2</span><a class="page-number" href="/archives/page/3/">3</a><a class="extend next" rel="next" href="/archives/page/3/">Next &amp;raquo;</a>
-    </nav>
-  
 
 
           </div>
@@ -792,8 +541,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,
